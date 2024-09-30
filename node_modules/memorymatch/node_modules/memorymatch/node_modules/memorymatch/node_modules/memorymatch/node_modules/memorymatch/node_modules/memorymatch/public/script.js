@@ -50,15 +50,15 @@ function createCards() {
     shuffledCards.forEach((image, index) => {
         const card = document.createElement('div');
         card.classList.add('card');
-    
+
         // Create image element
         const img = document.createElement('img');
         img.src = image;
         card.appendChild(img);
-    
+
         // Add event listener for flipping cards
         card.addEventListener('click', () => flipCard(card, img));
-    
+
         cardGrid.appendChild(card);
     });
 }
@@ -71,7 +71,7 @@ function flipCard(card, img) {
     if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
         card.classList.add('flipped');
         flippedCards.push(card);
-        
+
         if (flippedCards.length === 2) {
             setTimeout(checkForMatch, 1000);
         }
@@ -87,16 +87,22 @@ function checkForMatch() {
     if (firstImage === secondImage) {
         matchedCards += 2;
         flippedCards = [];  // Reset flipped cards
-        
+
         // Check for win condition
         if (matchedCards === cards.length) {
-            setTimeout(() => alert('Congratulations! You won!'), 500);
+            setTimeout(showCongratulationsMessage, 500);
         }
     } else {
         firstCard.classList.remove('flipped');
         secondCard.classList.remove('flipped');
         flippedCards = [];  // Reset flipped cards
     }
+}
+
+// Function to show congratulations message
+function showCongratulationsMessage() {
+    const message = document.getElementById('congratulations');
+    message.style.display = 'block'; // Show the message
 }
 
 // Reset game functionality
@@ -106,4 +112,18 @@ document.getElementById('reset-button').addEventListener('click', () => {
     document.getElementById('reset-button').style.display = 'none';
     flippedCards = [];
     matchedCards = 0;
+
+    // Hide the congratulations message
+    const existingMessage = document.getElementById('congratulations');
+    existingMessage.style.display = 'none';
+    
+    // Optionally clear the card grid
+    const cardGrid = document.getElementById('card-grid');
+    cardGrid.innerHTML = ''; 
+});
+
+// Close button functionality
+document.getElementById('close-button').addEventListener('click', () => {
+    const message = document.getElementById('congratulations');
+    message.style.display = 'none'; // Hide the message
 });
