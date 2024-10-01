@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Match The Characters</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="game-container">
@@ -12,17 +13,17 @@
         <h1 id="game-title">Match The Characters</h1>
         
         <!-- Start button to trigger the game -->
-        <button id="start-button">Start Game</button>
+        <button id="start-button" class="btn btn-primary">Start Game</button>
         
         <!-- Card grid will be hidden initially -->
         <div class="card-grid" id="card-grid" style="display: none;"></div>
         
         <!-- Reset button -->
-        <button id="reset-button" style="display: none;">Reset Game</button>
+        <button id="reset-button" class="btn btn-warning" style="display: none;">Reset Game</button>
     </div>
     
     <!-- Congratulations message -->
-    <div id="congratulations" class="congratulations-message">
+    <div id="congratulations" class="congratulations-message" style="display: none;">
         <p>Congratulations! You won!</p>
         <button class="close-button" id="close-button">Close</button>
     </div>
@@ -30,5 +31,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
