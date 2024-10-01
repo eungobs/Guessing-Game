@@ -1,4 +1,3 @@
-// Array of character card images
 const cardImages = [
     'https://i.pinimg.com/564x/de/01/d7/de01d78472cf13183bcf2baa3773c0a6.jpg',
     'https://i.pinimg.com/564x/75/5f/a3/755fa3e846751a2a00045e9f4c58fa79.jpg',
@@ -20,7 +19,7 @@ const cardImages = [
     'https://i.pinimg.com/564x/47/bf/e7/47bfe7f270b186e00a04ef12d920c9dd.jpg',
 ];
 
-// To double the array for pairs
+// Double the array for pairs
 const cards = [...cardImages, ...cardImages];
 
 // Shuffle cards function
@@ -32,8 +31,13 @@ function shuffle(array) {
     return array;
 }
 
-// Shuffle the cards when the game starts
+// Variables
 let shuffledCards;
+let timerInterval;
+let timeRemaining = 300; // 5 minutes in seconds
+let score = 0;
+let flippedCards = [];
+let matchedCards = 0;
 
 // Function to start the game
 document.getElementById('start-button').addEventListener('click', () => {
@@ -42,18 +46,40 @@ document.getElementById('start-button').addEventListener('click', () => {
     document.getElementById('card-grid').style.display = 'grid';
     document.getElementById('reset-button').style.display = 'block';
     createCards();
+    startTimer(); // Start the timer when the game begins
 });
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert("Time's up! You didn't win in time.");
+            resetGame(); // Optionally reset the game if time runs out
+        } else {
+            timeRemaining--;
+            updateTimerDisplay();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const timerDisplay = document.getElementById('timer'); // Ensure you have an element with this ID
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    timerDisplay.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`; // Format the display
+}
 
 function createCards() {
     const cardGrid = document.getElementById('card-grid');
     cardGrid.innerHTML = '';  // Clear any existing cards
-    shuffledCards.forEach((image, index) => {
+    shuffledCards.forEach((image) => {
         const card = document.createElement('div');
-        card.classList.add('card');
+        card.classList.add('card', 'bg-dark-green', 'text-white'); // Add Bootstrap classes
 
         // Create image element
         const img = document.createElement('img');
         img.src = image;
+        img.style.opacity = '0'; // Hide the image initially
         card.appendChild(img);
 
         // Add event listener for flipping cards
@@ -63,13 +89,10 @@ function createCards() {
     });
 }
 
-let flippedCards = [];
-let matchedCards = 0;
-
-// Function to flip a card
 function flipCard(card, img) {
     if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
         card.classList.add('flipped');
+        img.style.opacity = '1'; // Show the image
         flippedCards.push(card);
 
         if (flippedCards.length === 2) {
@@ -88,42 +111,98 @@ function checkForMatch() {
         matchedCards += 2;
         flippedCards = [];  // Reset flipped cards
 
+        // Show balloon pop when matched
+        showBalloonPop();
+
         // Check for win condition
         if (matchedCards === cards.length) {
+            clearInterval(timerInterval); // Stop the timer
+            score += 100; // Award points for winning in time
+            alert(`Congratulations! You won and earned ${score} points!`);
             setTimeout(showCongratulationsMessage, 500);
         }
     } else {
-        firstCard.classList.remove('flipped');
-        secondCard.classList.remove('flipped');
-        flippedCards = [];  // Reset flipped cards
+        // Hide images after a short delay
+        setTimeout(() => {
+            firstCard.classList.remove('flipped');
+            secondCard.classList.remove('flipped');
+            firstCard.querySelector('img').style.opacity = '0';
+            secondCard.querySelector('img').style.opacity = '0';
+            flippedCards = []; // Reset flipped cards
+        }, 1000);
     }
 }
 
-// Function to show congratulations message
+// Function to show a pop-up when the user wins
 function showCongratulationsMessage() {
-    const message = document.getElementById('congratulations');
-    message.style.display = 'block'; // Show the message
+    document.getElementById('congratulations').style.display = 'block';
 }
 
-// Reset game functionality
-document.getElementById('reset-button').addEventListener('click', () => {
-    document.getElementById('start-button').style.display = 'block';
-    document.getElementById('card-grid').style.display = 'none';
-    document.getElementById('reset-button').style.display = 'none';
-    flippedCards = [];
-    matchedCards = 0;
+// Function to reset the game
+document.getElementById('reset-button').addEventListener('click', resetGame);
 
-    // Hide the congratulations message
-    const existingMessage = document.getElementById('congratulations');
-    existingMessage.style.display = 'none';
-    
-    // Optionally clear the card grid
-    const cardGrid = document.getElementById('card-grid');
-    cardGrid.innerHTML = ''; 
-});
+function resetGame() {
+    clearInterval(timerInterval);
+    timeRemaining = 300; // Reset time
+    matchedCards = 0; // Reset matched cards count
+    score = 0; // Reset score
+    document.getElementById('timer').innerText = '5:00'; // Reset timer display
+    document.getElementById('congratulations').style.display = 'none'; // Hide congratulation message
+    document.getElementById('card-grid').style.display = 'none'; // Hide card grid
+    document.getElementById('start-button').style.display = 'block'; // Show start button
+    document.getElementById('reset-button').style.display = 'none'; // Hide reset button
+}
 
-// Close button functionality
-document.getElementById('close-button').addEventListener('click', () => {
-    const message = document.getElementById('congratulations');
-    message.style.display = 'none'; // Hide the message
-});
+// Function to show balloon pop effect
+function showBalloonPop() {
+    const balloon = document.createElement('div');
+    balloon.classList.add('balloon-pop'); // Add CSS class for balloon pop effect
+    document.body.appendChild(balloon);
+
+    setTimeout(() => {
+        balloon.remove(); // Remove the balloon after the animation ends
+    }, 1000);
+}
+
+// Optional: Add balloon pop CSS
+document.head.insertAdjacentHTML('beforeend', `
+<style>
+.card {
+    background-color: darkgreen; /* Dark green color for cards */
+    border: 2px solid #fff;
+    border-radius: 10px;
+    width: 100px; /* Adjust card size */
+    height: 100px; /* Adjust card size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.balloon-pop {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 70px;
+    background-color: red;
+    border-radius: 50%;
+    animation: pop 1s forwards;
+}
+
+@keyframes pop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(0); opacity: 0; }
+}
+
+.bg-dark-green {
+    background-color: #005700; /* Dark green background */
+}
+
+.text-white {
+    color: #fff; /* White text */
+}
+
+</style>
+`);

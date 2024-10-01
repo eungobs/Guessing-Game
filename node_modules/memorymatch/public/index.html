@@ -8,24 +8,25 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="game-container">
-        <!-- Game title with blinking effect -->
-        <h1 id="game-title">Match The Characters</h1>
+    <div class="game-container text-center">
+        <!-- Game title with blinking effect and timer -->
+        <h1 id="game-title" class="d-inline-block mb-4">Match The Characters</h1>
+        <div id="timer" class="d-inline-block mb-4 ms-3">5:00</div>
         
         <!-- Start button to trigger the game -->
-        <button id="start-button" class="btn btn-primary">Start Game</button>
+        <button id="start-button" class="btn btn-primary mb-2">Start Game</button>
         
         <!-- Card grid will be hidden initially -->
         <div class="card-grid" id="card-grid" style="display: none;"></div>
         
         <!-- Reset button -->
         <button id="reset-button" class="btn btn-warning" style="display: none;">Reset Game</button>
-    </div>
-    
-    <!-- Congratulations message -->
-    <div id="congratulations" class="congratulations-message" style="display: none;">
-        <p>Congratulations! You won!</p>
-        <button class="close-button" id="close-button">Close</button>
+        
+        <!-- Congratulations message -->
+        <div id="congratulations" class="congratulations-message" style="display: none; margin-top: 20px;">
+            <p>Congratulations! You won!</p>
+            <button class="close-button btn btn-secondary" id="close-button">Close</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
