@@ -34,7 +34,7 @@ function shuffle(array) {
 // Variables
 let shuffledCards;
 let timerInterval;
-let timeRemaining = 300; // 5 minutes in seconds
+let timeRemaining = 600; // 10 minutes in seconds
 let score = 0;
 let flippedCards = [];
 let matchedCards = 0;
@@ -63,7 +63,7 @@ function startTimer() {
 }
 
 function updateTimerDisplay() {
-    const timerDisplay = document.getElementById('timer'); // Ensure you have an element with this ID
+    const timerDisplay = document.getElementById('timer');
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
     timerDisplay.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`; // Format the display
@@ -71,10 +71,10 @@ function updateTimerDisplay() {
 
 function createCards() {
     const cardGrid = document.getElementById('card-grid');
-    cardGrid.innerHTML = '';  // Clear any existing cards
+    cardGrid.innerHTML = ''; // Clear any existing cards
     shuffledCards.forEach((image) => {
         const card = document.createElement('div');
-        card.classList.add('card', 'bg-dark-green', 'text-white'); // Add Bootstrap classes
+        card.classList.add('card', 'bg-dark-green', 'text-white');
 
         // Create image element
         const img = document.createElement('img');
@@ -96,7 +96,7 @@ function flipCard(card, img) {
         flippedCards.push(card);
 
         if (flippedCards.length === 2) {
-            setTimeout(checkForMatch, 1000);
+            setTimeout(checkForMatch, 500); // Reduced time for unmatched cards
         }
     }
 }
@@ -109,10 +109,10 @@ function checkForMatch() {
 
     if (firstImage === secondImage) {
         matchedCards += 2;
-        flippedCards = [];  // Reset flipped cards
+        flippedCards = []; // Reset flipped cards
 
-        // Show balloon pop when matched
-        showBalloonPop();
+        // Show multiple balloon pops when matched
+        showMultipleBalloonPops();
 
         // Check for win condition
         if (matchedCards === cards.length) {
@@ -122,14 +122,14 @@ function checkForMatch() {
             setTimeout(showCongratulationsMessage, 500);
         }
     } else {
-        // Hide images after a short delay
+        // Flip back unmatched cards quickly
         setTimeout(() => {
             firstCard.classList.remove('flipped');
             secondCard.classList.remove('flipped');
             firstCard.querySelector('img').style.opacity = '0';
             secondCard.querySelector('img').style.opacity = '0';
             flippedCards = []; // Reset flipped cards
-        }, 1000);
+        }, 500); // Faster flipping back
     }
 }
 
@@ -143,36 +143,42 @@ document.getElementById('reset-button').addEventListener('click', resetGame);
 
 function resetGame() {
     clearInterval(timerInterval);
-    timeRemaining = 300; // Reset time
+    timeRemaining = 600; // Reset time to 10 minutes
     matchedCards = 0; // Reset matched cards count
     score = 0; // Reset score
-    document.getElementById('timer').innerText = '5:00'; // Reset timer display
+    document.getElementById('timer').innerText = '10:00'; // Reset timer display
     document.getElementById('congratulations').style.display = 'none'; // Hide congratulation message
     document.getElementById('card-grid').style.display = 'none'; // Hide card grid
     document.getElementById('start-button').style.display = 'block'; // Show start button
     document.getElementById('reset-button').style.display = 'none'; // Hide reset button
 }
 
-// Function to show balloon pop effect
-function showBalloonPop() {
-    const balloon = document.createElement('div');
-    balloon.classList.add('balloon-pop'); // Add CSS class for balloon pop effect
-    document.body.appendChild(balloon);
+// Function to show multiple balloon pop effects
+function showMultipleBalloonPops() {
+    for (let i = 0; i < 5; i++) { // Create multiple balloons
+        setTimeout(() => {
+            const balloon = document.createElement('div');
+            balloon.classList.add('balloon-pop');
+            balloon.style.top = `${Math.random() * 100}%`;
+            balloon.style.left = `${Math.random() * 100}%`;
+            document.body.appendChild(balloon);
 
-    setTimeout(() => {
-        balloon.remove(); // Remove the balloon after the animation ends
-    }, 1000);
+            setTimeout(() => {
+                balloon.remove(); // Remove each balloon after the animation ends
+            }, 1000);
+        }, i * 200); // Delay each balloon pop slightly
+    }
 }
 
 // Optional: Add balloon pop CSS
 document.head.insertAdjacentHTML('beforeend', `
 <style>
 .card {
-    background-color: darkgreen; /* Dark green color for cards */
+    background-color: darkgreen;
     border: 2px solid #fff;
     border-radius: 10px;
-    width: 100px; /* Adjust card size */
-    height: 100px; /* Adjust card size */
+    width: 100px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -181,8 +187,6 @@ document.head.insertAdjacentHTML('beforeend', `
 
 .balloon-pop {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
     width: 50px;
     height: 70px;
     background-color: red;
@@ -197,12 +201,11 @@ document.head.insertAdjacentHTML('beforeend', `
 }
 
 .bg-dark-green {
-    background-color: #005700; /* Dark green background */
+    background-color: #005700;
 }
 
 .text-white {
-    color: #fff; /* White text */
+    color: #fff;
 }
-
 </style>
 `);
