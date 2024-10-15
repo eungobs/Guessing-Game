@@ -97,3 +97,5 @@ View the game: Open your browser and go to http://localhost:3000 to view the gam
 
 Resetting the Game
 You can reset the game by clicking on the "Reset Game" button, which will shuffle the cards and start a new game.
+
+The following is The figma (ui/ux) link:https://www.figma.com/design/qtEjh9kim7G7L4JiRx7rQT/Untitled?node-id=0-1&t=XStKQLp92ABnE2pU-1
